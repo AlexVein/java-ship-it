@@ -26,6 +26,14 @@ public abstract class Parcel {
         parcelID = getDateNow() + "-" + id;
     }
 
+    public String getParcelID() {
+        return parcelID;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
     public int calculateDeliveryCost() {
         return (int) (weight * deliveryType.getRate());
     }

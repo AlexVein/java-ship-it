@@ -1,7 +1,12 @@
 package ru.yandex.practicum.delivery;
 
+import ru.yandex.practicum.delivery.model.DeliveryType;
+import ru.yandex.practicum.delivery.model.FragileParcel;
+import ru.yandex.practicum.delivery.model.Parcel;
+import ru.yandex.practicum.delivery.model.ParcelBox;
+import ru.yandex.practicum.delivery.model.PerishableParcel;
+import ru.yandex.practicum.delivery.model.StandardParcel;
 import ru.yandex.practicum.delivery.navigation.Address;
-import ru.yandex.practicum.delivery.model.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,10 +15,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class DeliveryApp {
+    public static final double SIZE_STANDARD_BOX = 100;
+    public static final double SIZE_FRAGILE_BOX = 20;
+    public static final double SIZE_PERISHABLE_BOX = 50;
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<Parcel> allParcels = new ArrayList<>();
     private static final List<FragileParcel> allFragileParcels = new ArrayList<>();
+    private static final ParcelBox<StandardParcel> packedStandardParcels = new ParcelBox<>(SIZE_STANDARD_BOX);
+    private static final ParcelBox<FragileParcel> packedFragileParcels = new ParcelBox<>(SIZE_FRAGILE_BOX);
+    private static final ParcelBox<PerishableParcel> packedPerishableParcels = new ParcelBox<>(SIZE_PERISHABLE_BOX);
 
     public static void main(String[] args) {
         boolean running = true;
@@ -26,12 +37,12 @@ public class DeliveryApp {
                 case 2 -> sendParcels();
                 case 3 -> calculateCosts();
                 case 4 -> changeStatus();
+                case 5 -> showParcelsFromBox();
                 case 0 -> running = false;
                 default -> System.out.println("Неверный выбор.");
             }
         }
     }
-
 
     private static void addParcel() {
         DeliveryType type = getDeliveryType();
@@ -58,14 +69,23 @@ public class DeliveryApp {
         }
 
         switch (type) {
-            case STANDARD -> allParcels.add(new StandardParcel(description, weight, deliveryAddress, sendDay));
+            case STANDARD -> {
+                StandardParcel parcel = new StandardParcel(description, weight, deliveryAddress, sendDay);
+                allParcels.add(parcel);
+                packedStandardParcels.addParcel(parcel);
+            }
             case FRAGILE -> {
                 FragileParcel parcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
                 allParcels.add(parcel);
+                packedFragileParcels.addParcel(parcel);
                 allFragileParcels.add(parcel);
             }
-            case PERISHABLE ->
-                    allParcels.add(new PerishableParcel(description, weight, deliveryAddress, sendDay, timeToLive));
+            case PERISHABLE -> {
+                PerishableParcel parcel = new PerishableParcel(
+                        description, weight, deliveryAddress, sendDay, timeToLive);
+                allParcels.add(parcel);
+                packedPerishableParcels.addParcel(parcel);
+            }
         }
     }
 
@@ -127,7 +147,23 @@ public class DeliveryApp {
         System.out.println("2 — Отправить все посылки");
         System.out.println("3 — Посчитать стоимость доставки");
         System.out.println("4 — Изменить статус посылки");
+        System.out.println("5 — Показать содержимое коробки");
         System.out.println("0 — Завершить");
     }
-}
 
+    private static void showParcelsFromBox() {
+        System.out.println("Укажите тип содержимого коробки: 1 — стандартная, 2 — хрупкая, 3 — скоропортящаяся");
+        int userChoice = Integer.parseInt(scanner.nextLine());
+
+        ArrayList<? extends Parcel> parcels = new ArrayList<>();
+
+        switch (userChoice) {
+            case 1 -> parcels = packedStandardParcels.getAllParcels();
+            case 2 -> parcels = packedFragileParcels.getAllParcels();
+            case 3 -> parcels = packedPerishableParcels.getAllParcels();
+            default -> System.out.println("Неверный выбор.");
+        }
+
+        parcels.forEach(parcel -> System.out.println());
+    }
+}
