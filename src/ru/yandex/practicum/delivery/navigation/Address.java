@@ -1,6 +1,5 @@
 package ru.yandex.practicum.delivery.navigation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
