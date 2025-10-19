@@ -13,6 +13,7 @@ public class DeliveryApp {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<Parcel> allParcels = new ArrayList<>();
+    private static final List<FragileParcel> allFragileParcels = new ArrayList<>();
 
     public static void main(String[] args) {
         boolean running = true;
@@ -21,31 +22,16 @@ public class DeliveryApp {
             int choice = Integer.parseInt(scanner.nextLine());
 
             switch (choice) {
-                case 1:
-                    addParcel();
-                    break;
-                case 2:
-                    sendParcels();
-                    break;
-                case 3:
-                    calculateCosts();
-                    break;
-                case 0:
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Неверный выбор.");
+                case 1 -> addParcel();
+                case 2 -> sendParcels();
+                case 3 -> calculateCosts();
+                case 4 -> changeStatus();
+                case 0 -> running = false;
+                default -> System.out.println("Неверный выбор.");
             }
         }
     }
 
-    private static void showMenu() {
-        System.out.println("Выберите действие:");
-        System.out.println("1 — Добавить посылку");
-        System.out.println("2 — Отправить все посылки");
-        System.out.println("3 — Посчитать стоимость доставки");
-        System.out.println("0 — Завершить");
-    }
 
     private static void addParcel() {
         DeliveryType type = getDeliveryType();
@@ -73,16 +59,13 @@ public class DeliveryApp {
 
         switch (type) {
             case STANDARD -> allParcels.add(new StandardParcel(description, weight, deliveryAddress, sendDay));
-            case FRAGILE -> allParcels.add(new FragileParcel(description, weight, deliveryAddress, sendDay));
+            case FRAGILE -> {
+                FragileParcel parcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
+                allParcels.add(parcel);
+                allFragileParcels.add(parcel);
+            }
             case PERISHABLE ->
                     allParcels.add(new PerishableParcel(description, weight, deliveryAddress, sendDay, timeToLive));
-        }
-    }
-
-    private static void sendParcels() {
-        for (Parcel parcel : allParcels) {
-            parcel.packageItem();
-            parcel.deliver();
         }
     }
 
@@ -96,15 +79,12 @@ public class DeliveryApp {
         System.out.printf("Общая стоимость всех отправлений: %d руб.", sumParcels);
     }
 
-    private static DeliveryType getDeliveryType() {
-        System.out.println("Введите тип посылки: 1 — стандартная, 2 — хрупкая, 3 — скоропортящаяся");
-        int userChoice = Integer.parseInt(scanner.nextLine());
-        return switch (userChoice) {
-            case 1 -> DeliveryType.STANDARD;
-            case 2 -> DeliveryType.FRAGILE;
-            case 3 -> DeliveryType.PERISHABLE;
-            default -> null;
-        };
+    private static void changeStatus() {
+        System.out.println("Введите местоположение посылки:");
+        String newLocation = scanner.nextLine();
+        for (FragileParcel parcel : allFragileParcels) {
+            parcel.reportStatus(newLocation);
+        }
     }
 
     private static Address getDeliveryAddress() {
@@ -118,9 +98,36 @@ public class DeliveryApp {
         return new Address(postalCode, city, street, house, flat);
     }
 
+    private static DeliveryType getDeliveryType() {
+        System.out.println("Введите тип посылки: 1 — стандартная, 2 — хрупкая, 3 — скоропортящаяся");
+        int userChoice = Integer.parseInt(scanner.nextLine());
+        return switch (userChoice) {
+            case 1 -> DeliveryType.STANDARD;
+            case 2 -> DeliveryType.FRAGILE;
+            case 3 -> DeliveryType.PERISHABLE;
+            default -> null;
+        };
+    }
+
     private static LocalDate getSendDay() {
         System.out.println("Введите дату отправления посылки в формате дд.мм.гггг (например, 01.01.2001):");
         return LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    private static void sendParcels() {
+        for (Parcel parcel : allParcels) {
+            parcel.packageItem();
+            parcel.deliver();
+        }
+    }
+
+    private static void showMenu() {
+        System.out.println("Выберите действие:");
+        System.out.println("1 — Добавить посылку");
+        System.out.println("2 — Отправить все посылки");
+        System.out.println("3 — Посчитать стоимость доставки");
+        System.out.println("4 — Изменить статус посылки");
+        System.out.println("0 — Завершить");
     }
 }
 

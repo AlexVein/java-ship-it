@@ -26,8 +26,8 @@ public abstract class Parcel {
         parcelID = getDateNow() + "-" + id;
     }
 
-    public void packageItem() {
-        System.out.printf("Посылка %s упакована.\n", parcelID);
+    public int calculateDeliveryCost() {
+        return (int) (weight * deliveryType.getRate());
     }
 
     public void deliver() {
@@ -35,8 +35,8 @@ public abstract class Parcel {
                 parcelID, description, deliveryAddress.getHumanReadableAddress());
     }
 
-    public int calculateDeliveryCost() {
-        return (int) (weight * deliveryType.getRate());
+    public void packageItem() {
+        System.out.printf("Посылка %s упакована.\n", parcelID);
     }
 
     private String getDateNow() {
