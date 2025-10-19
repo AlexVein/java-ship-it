@@ -11,8 +11,12 @@ public class ParcelBox<T extends Parcel> {
         this.weight = weight;
     }
 
+    public int getFreeWeight() {
+        return weight;
+    }
+
     public void addParcel(T parcel) {
-        if (weight < weight + parcel.getWeight()) {
+        if (weight - parcel.getWeight() < 0) {
             System.err.printf("""
                             Невозможно добавить посылку %s в коробку.
                             Вес посылки составляет %d кг. Коробка может вместить еще %d кг.
