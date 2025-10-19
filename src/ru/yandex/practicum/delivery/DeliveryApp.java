@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class DeliveryApp {
-    public static final double SIZE_STANDARD_BOX = 100;
-    public static final double SIZE_FRAGILE_BOX = 20;
-    public static final double SIZE_PERISHABLE_BOX = 50;
+    public static final int SIZE_STANDARD_BOX = 100;
+    public static final int SIZE_FRAGILE_BOX = 20;
+    public static final int SIZE_PERISHABLE_BOX = 50;
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<Parcel> allParcels = new ArrayList<>();
@@ -54,7 +54,7 @@ public class DeliveryApp {
         System.out.println("Введите описание посылки:");
         String description = scanner.nextLine();
         System.out.println("Введите вес посылки:");
-        double weight = Double.parseDouble(scanner.nextLine());
+        int weight = Integer.parseInt(scanner.nextLine());
         Address deliveryAddress = getDeliveryAddress();
         LocalDate sendDay = getSendDay();
 

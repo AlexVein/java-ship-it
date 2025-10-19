@@ -11,12 +11,12 @@ public abstract class Parcel {
 
     protected DeliveryType deliveryType;
     protected String description;
-    protected double weight;
+    protected int weight;
     protected Address deliveryAddress;
     protected LocalDate sendDay;
     protected String parcelID;
 
-    public Parcel(String description, double weight, Address deliveryAddress, LocalDate sendDay) {
+    public Parcel(String description, int weight, Address deliveryAddress, LocalDate sendDay) {
         id++;
         this.deliveryType = DeliveryType.STANDARD;
         this.description = description;
@@ -30,12 +30,12 @@ public abstract class Parcel {
         return parcelID;
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
     public int calculateDeliveryCost() {
-        return (int) (weight * deliveryType.getRate());
+        return weight * deliveryType.getRate();
     }
 
     public void deliver() {
@@ -57,7 +57,7 @@ public abstract class Parcel {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Parcel parcel = (Parcel) o;
-        return Double.compare(weight, parcel.weight) == 0 &&
+        return weight == parcel.weight &&
                 deliveryType == parcel.deliveryType &&
                 Objects.equals(description, parcel.description) &&
                 Objects.equals(deliveryAddress, parcel.deliveryAddress) &&

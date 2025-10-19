@@ -8,7 +8,7 @@ import java.util.Objects;
 public class PerishableParcel extends Parcel {
     private final int timeToLive;
 
-    public PerishableParcel(String description, double weight, Address deliveryAddress, LocalDate sendDay, int timeToLive) {
+    public PerishableParcel(String description, int weight, Address deliveryAddress, LocalDate sendDay, int timeToLive) {
         super(description, weight, deliveryAddress, sendDay);
         this.deliveryType = DeliveryType.PERISHABLE;
         this.timeToLive = timeToLive;

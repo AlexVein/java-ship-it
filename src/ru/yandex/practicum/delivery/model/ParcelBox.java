@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class ParcelBox<T extends Parcel> {
     private final ArrayList<T> packedParcels = new ArrayList<>();
 
-    private double weight;
+    private int weight;
 
-    public ParcelBox(double weight) {
+    public ParcelBox(int weight) {
         this.weight = weight;
     }
 
@@ -15,7 +15,7 @@ public class ParcelBox<T extends Parcel> {
         if (weight < weight + parcel.getWeight()) {
             System.err.printf("""
                             Невозможно добавить посылку %s в коробку.
-                            Вес посылки составляет %.2f кг. Коробка может вместить еще %.2f кг.
+                            Вес посылки составляет %d кг. Коробка может вместить еще %d кг.
                             """,
                     parcel.getParcelID(), parcel.getWeight(), weight);
             return;
