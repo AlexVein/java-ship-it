@@ -164,6 +164,6 @@ public class DeliveryApp {
             default -> System.out.println("Неверный выбор.");
         }
 
-        parcels.forEach(parcel -> System.out.println());
+        parcels.forEach(System.out::println);
     }
 }
